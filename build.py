@@ -58,6 +58,31 @@ BONUS = dict(n='+', title='HAKUHINKAN TOY PARK', jp='博品館 TOY PARK', genre=
              tx='A big toy store in Ginza 8-chome, about five minutes west of GINZA SIX: the opposite way from dinner. We go only if we leave the rooftop early; otherwise it is a wave from the pavement.',
              hrs='Opening hours: not checked, see the shop site', q='Hakuhinkan+Toy+Park')
 
+
+# ---- EXTRA STOPS: optional detours, not on the main timeline. g = area group. ph=None -> no free photo exists
+EXTRA = [
+ dict(k='A', g='Near the start', title='HAMANOYA PARLOR', jp='はまの屋パーラー 日本橋本店', ph=None, short='Egg sandwich',
+      tx='A classic-style kissaten in the basement of the Yagicho Building, one minute from Mitsukoshimae. The egg sandwich follows the first owner\'s recipe; a half-and-half of egg and fruit sandwich is on the menu. A quiet, old-fashioned coffee break before the walk.',
+      hrs='9:00-18:00, last order 17:30 · Nihonbashi Muromachi 1-7-2, B1F · Closed days not confirmed: check on the day', src='Time Out Tokyo, 20 Nov 2023 article, read 12 Nov 2026', q='Hamanoya+Parlor+Nihonbashi', hshort='9:00-18:00'),
+ dict(k='A', g='Near the start', title='NINBEN NIHONBASHI', jp='にんべん 日本橋本店', ph=None, short='Bonito flakes',
+      tx='A bonito-flake house from the Edo period, on the ground floor of COREDO Muromachi 1. Buy a pack of freshly shaved flakes or dashi packs: light, cheap, easy to carry home, and very Japanese. The Dashi-ba counter next door serves bonito broth.',
+      hrs='Shop 11:00-19:00 weekdays, 10:30 on weekends · Dashi-ba counter reported 11:00-18:00: check on the day', src='Mitsui Shopping Park COREDO Muromachi store page; san-tatsu.jp', q='Ninben+Nihonbashi+Main+Store', hshort='11:00-19:00'),
+ dict(k='A', g='Near the start', title='FUKUTOKU SHRINE & FUKUTOKU NO MORI', jp='福徳神社・福徳の森', ph='fukutoku', short='Shrine + garden',
+      tx='A small shrine said to be here since the 9th century, now tucked behind COREDO Muromachi with a little garden beside it. A calm five minutes between the glass towers; the amulet office sells lottery-luck charms and goshuin stamps.',
+      hrs='Grounds are outdoors: hours not published, check on the day · Amulet office 10:00-17:00', src='Shrine official site mebuki.jp, read 12 Nov 2026', q='Fukutoku+Shrine+Nihonbashi', hshort='Amulets 10:00-17:00'),
+ dict(k='A', g='In Ginza', title='TRICOLORE HONTEN', jp='銀座トリコロール 本店', ph='tricolore', short='Kissaten since 1936',
+      tx='A Ginza coffee house open since 1936, with a revolving door at the entrance and a Showa-era room. Order the small, light eclair or the milk coffee: a proper old kissaten stop for a visitor who wants the real thing.',
+      hrs='8:00-19:00, last order 18:30; closed Tuesday (Gurunavi). Another listing says no closed day: CHECK ON THE DAY, tel 03-3571-1811 · Ginza 5-9-17', src='Gurunavi r.gnavi.co.jp; san-tatsu.jp (updated Feb 2023)', q='Ginza+Tricolore+Honten', hshort='to 19:00 · Tue? check'),
+ dict(k='A', g='In Ginza', title='G. ITOYA', jp='銀座 伊東屋 本店', ph='itoya', short='Stationery flagship',
+      tx='Japan\'s best-known stationery store, a 12-floor flagship on Chuo-dori. Pens, notebooks, washi and postcards make easy, light souvenirs, and the staff are used to visitors. There is a cafe on the 12th floor.',
+      hrs='Mon-Sat 10:00-20:00, Sun and holidays 10:00-19:00 · No regular closed day · Ginza 2-7-15', src='Itoya official site ito-ya.co.jp (store page and FAQ)', q='G.Itoya+Ginza', hshort='to 20:00 (Sun 19:00)'),
+ dict(k='B', g='In Ginza', title='CAFE DE L\'AMBRE', jp='カフェ・ド・ランブル', ph='lambre', short='Coffee only, since 1948',
+      tx='A coffee-only shop with the year 1948 on its sign: hand-drip, own roast, aged beans. It is small and serious about coffee, so go for one cup, not a long stay. Ginza 8-chome, on the Hakuhinkan side.',
+      hrs='Listings disagree on hours and closed day (Tuesday on HotPepper, Monday on Tabelog): CHECK ON THE DAY, tel 03-3571-1551 · Ginza 8-10-15', src='HotPepper (updated Feb 2020); Tabelog English page', q='Cafe+de+L%27Ambre+Ginza', hshort='check on the day'),
+ dict(k='B', g='In Ginza', title='MATSUZAKI SENBEI', jp='銀座 松﨑煎餅 本店', ph=None, short='Rice-cracker gifts',
+      tx='A rice-cracker house with a long Ginza history, known for crackers printed with pictures. Light, flat and cheap: a good souvenir. The main store moved in May 2026 to a new place in Ginza 3-chome on the same street.',
+      hrs='New store hours and exact address not confirmed: CHECK ON THE DAY (shop tel 03-6264-6703)', src='PR TIMES release on the 7 May 2026 opening', q='Matsuzaki+Senbei+Ginza', hshort='check on the day'),
+]
 # ---------------------------------------------------------------- credits
 def credit(k):
     c = CR[k]; return f'{html.escape(c["artist"] or "unknown")}, {c["license"]}, via <a href="{c["page"]}">Wikimedia Commons</a>'
@@ -85,6 +110,17 @@ def card(s, bonus=False):
 <div class="bt"><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query={s['q']}">Google Maps <i>&rarr;</i></a></div>
 <p class="pcr">{pcs}{ex}</p>
 </article>'''
+
+
+def extra_card(e):
+    ph = f'<img class="ph" src="img/{e["ph"]}.jpg" alt="{html.escape(e["title"].title())}">' if e['ph'] else ''
+    pc = f'Photo: {credit(e["ph"])}.' if e['ph'] else 'No freely licensed photo exists, so none is shown.'
+    return f'''<article class="card x"><div class="hd"><span class="big">{e['k']}</span><div><span class="genre">{e['g']} · {e['short']}</span><h3>{e['title']}</h3><p class="jp" lang="ja">{e['jp']}</p></div></div>
+{ph}<p class="tx">{e['tx']}</p><p class="hrs">{html.escape(e['hrs'])}</p><p class="hrs">Source: {html.escape(e['src'])}</p>
+<div class="bt"><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query={e['q']}">Google Maps <i>&rarr;</i></a></div><p class="pcr">{pc}</p></article>'''
+
+def extra_section():
+    return '<section><div class="bar"><h2>EXTRA STOPS</h2><span>OPTIONAL</span></div></section><p class="gp">Optional detours, not on the timeline. The 18:25 arrival at LOBOS does not change: pick one or two only if we are ahead of time. A = first choice, B = second choice. Hours marked CHECK ON THE DAY could not be confirmed.</p>' + ''.join(extra_card(e) for e in EXTRA)
 
 TL = [('15:00', 'Start at Mitsukoshimae Station', 'Meet at the station; five minutes on foot to the bridge.', None),
       ('15:05', 'Nihonbashi Bridge &amp; Japan Road Origin', 'Photo stop at the zero point of Japan.', 'p2', True),
@@ -137,7 +173,8 @@ def build_page():
 <div class="lg"><span><i></i>Numbers match the stops below</span><span><i class="r"></i>Red line: the walking route; the red circled H is the toy store, only if time allows</span></div>
 <section><div class="bar"><h2>THE STOPS</h2><span>2-9</span></div></section>
 {cards}
-<div class="cred"><h2>PHOTO CREDITS</h2><p>All photos are real photographs from Wikimedia Commons. Where no photo of the shop itself is free to use, the card says so and shows an example of the dish instead. LOBOS has no photo: no freely licensed image exists.</p><ul>{creds}</ul><p>Maps &copy; OpenStreetMap contributors.</p></div></div>
+{extra_section()}
+<div class="cred"><h2>PHOTO CREDITS</h2><p>All photos are real photographs from Wikimedia Commons. Where no photo of the shop itself is free to use, the card says so and shows an example of the dish instead. LOBOS, Hamanoya Parlor, Ninben and Matsuzaki Senbei have no photo: no freely licensed image exists.</p><ul>{creds}</ul><p>Maps &copy; OpenStreetMap contributors.</p></div></div>
 <script>document.getElementById("copyLink").addEventListener("click",function(){{var b=this,u="{URL}";function done(){{b.classList.add("done");setTimeout(function(){{b.classList.remove("done")}},1800)}}function fb(){{var t=document.createElement("textarea");t.value=u;document.body.appendChild(t);t.select();try{{document.execCommand("copy");done()}}catch(e){{}}document.body.removeChild(t)}}if(navigator.clipboard&&navigator.clipboard.writeText){{navigator.clipboard.writeText(u).then(done).catch(fb)}}else{{fb()}}}});</script></body></html>'''
 
 # ---------------------------------------------------------------- maps
@@ -162,6 +199,7 @@ def build_pdf_html():
     q = qrcode.make(URL, box_size=6, border=1); bb = io.BytesIO(); q.save(bb, 'PNG'); qr = base64.b64encode(bb.getvalue()).decode()
     band = ''.join(f'<div class="s{" first" if i == 0 else " last" if i == len(BAND) - 1 else ""}"><b>{t}</b>{x.replace("★", "<u>★</u>")}</div>' for i, (t, x) in enumerate(BAND))
     photos = ''.join(f'<div><img src="{jb("img/" + k + ".jpg")}" alt=""></div>' for k in ('hero', 'parfait', 'aqua', 'wako'))
+    ex = ''.join(f'<div class="x"><b><u>{e["k"]}</u> {e["title"].title().replace(chr(39)+"S",chr(39)+"s")}</b><span>{e["jp"]}</span><em>{e["short"]} · {e["hshort"]}</em></div>' for e in EXTRA)
     rows = ''
     for n, name, hrs in ROUTE:
         warn = ' w' if n == 5 else ''
@@ -176,6 +214,7 @@ h1{{font:900 31px/1 Archivo;font-stretch:75%;margin:0;white-space:nowrap}}.meta{
 .ph{{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.1fr;gap:6px;margin-top:6px;height:30mm;flex:none}}.ph div{{min-height:0;overflow:hidden}}.ph img{{display:block;width:100%;height:100%;object-fit:cover}}.ph div:nth-child(2) img{{object-position:50% 25%}}
 .band{{display:flex;margin-top:7px;flex:none}}.s{{flex:1;background:#e4e0d2;padding:5px 10px 5px 12px;font-size:9.5px;line-height:1.2;font-weight:600;min-height:14.5mm;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 50%,calc(100% - 9px) 100%,0 100%,9px 50%);margin-right:-4px}}
 .s b{{display:block;font-size:15px;font-weight:900}}.s u{{text-decoration:none;color:#e60012;font-weight:900}}.s.first{{background:#e60012;color:#fff;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 50%,calc(100% - 9px) 100%,0 100%)}}.s.last{{background:#111;color:#fff}}
+.xs{{margin-top:6px;flex:none;border:1.5px dashed #e60012;padding:3px 6px}}.xs h2{{font-size:11px;margin:0 0 2px}}.xs h2 small{{font:600 9px Archivo;color:#555;margin-left:6px}}.xg{{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}}.x{{font-size:8.5px;line-height:1.2;min-width:0}}.x b{{display:block;font-size:9.5px;font-weight:800}}.x u{{text-decoration:none;color:#e60012}}.x span{{display:block;color:#444;font-weight:500}}.x em{{display:block;font-style:normal;color:#777}}
 .low{{display:grid;grid-template-columns:80mm 80mm 1fr;gap:8px;margin-top:6px;flex:1;min-height:0}}
 .map{{width:100%;height:100%;object-fit:cover;border:2px solid #111;display:block;min-height:0}}
 .side{{display:flex;flex-direction:column;min-height:0}}h2{{font:900 15px Archivo;margin:0 0 2px}}
@@ -187,6 +226,7 @@ li i{{flex:none;width:18px;height:18px;border-radius:50%;background:#111;color:#
 .foot{{display:flex;gap:8px;align-items:center;margin-top:auto;font-size:9px;color:#555;border-top:1px solid #111;padding-top:3px}}.foot img{{width:15mm;height:15mm;flex:none}}.foot p{{margin:0 0 2px}}</style>
 <article><header><h1>{TITLE}</h1><div class="meta">Guide: Yuuki · start 15:00 Mitsukoshimae · dinner 18:30<div class="chips"><span>Soba ×2</span><span>Parfait</span><span>Goldfish art</span><span class="g">★ = GUIDE SCOUT</span></div></div></header>
 <div class="ph">{photos}</div><div class="band">{band}</div>
+<div class="xs"><h2>EXTRA STOPS <small>optional · LOBOS 18:25 unchanged</small></h2><div class="xg">{ex}</div></div>
 <div class="low"><img class="map" src="{b64('img/map1.png')}" alt=""><img class="map" src="{b64('img/map2.png')}" alt="">
 <div class="side"><h2>Route</h2><ul>{rows}</ul>
 <ul><li><i style="background:#fff;color:#e60012;border:2px solid #e60012;line-height:14px">H</i>Hakuhinkan 博品館 toy store<small>only if ahead of time</small></li></ul>
